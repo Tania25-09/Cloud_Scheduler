@@ -10,3 +10,10 @@ __pycache__/
 
 # VS Code settings
 .vscode/
+
+# Logs
+*.log
+
+# Backup files
+*.save
+*_backup.py
