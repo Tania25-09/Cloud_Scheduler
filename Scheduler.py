@@ -205,30 +205,40 @@ def stop_instances():
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 2:
+    try:
 
-        print("Usage:")
-        print("  python Scheduler.py status")
-        print("  python Scheduler.py start")
-        print("  python Scheduler.py stop")
+        if len(sys.argv) < 2:
 
-        sys.exit(1)
+            print("Usage:")
+            print("  python Scheduler.py status")
+            print("  python Scheduler.py start")
+            print("  python Scheduler.py stop")
 
-    command = sys.argv[1].lower()
+            sys.exit(1)
 
-    if command == "status":
+        command = sys.argv[1].lower()
 
-        show_status()
+        if command == "status":
 
-    elif command == "start":
+            show_status()
 
-        start_instances()
+        elif command == "start":
 
-    elif command == "stop":
+            start_instances()
 
-        stop_instances()
+        elif command == "stop":
 
-    else:
+            stop_instances()
 
-        print("Invalid command.")
-        print("Use: status, start, or stop")
+        else:
+
+            print("Invalid command.")
+            print("Use: status, start, or stop")
+
+    except Exception as e:
+
+        print(f"Unexpected error: {e}")
+
+        logger.exception(
+            f"Unexpected scheduler error: {e}"
+        )
