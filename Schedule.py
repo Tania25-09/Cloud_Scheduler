@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import subprocess
 import os
 
@@ -12,6 +12,11 @@ CONFIG_PATH = os.path.join(
 with open(CONFIG_PATH, "r") as file:
     config = json.load(file)
 
+NOTIFICATION_MARKER = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    f".notification_snt_{now.strftime('%Y-%m-%d')}"
+)
+
 # Current date and time
 now = datetime.now()
 
@@ -20,6 +25,10 @@ current_day = now.isoweekday()
 
 start_time = config["start_time"]
 stop_time = config["stop_time"]
+stop_datetime = datetime.strptime(stop_time, "%H:%M")
+notification_time = (
+    stop_datetime - timedelta(minutes=10)
+).strftime("%H:%M")
 weekdays = config["weekdays"]
 weekend_shutdown = config["weekend_shutdown"]
 
@@ -39,6 +48,26 @@ if current_day in weekdays:
             "start"
         ])
 
+
+    elif current_time == notification_time:
+        if not os.path.exists(NOTIFICATION_MARKER):
+            print("Sending pre-stop notification...")
+
+            result = subprocess.run([
+                "/home/ubuntu/Cloud_Scheduler/venv/bin/python",
+                "/home/ubuntu/Cloud_Scheduler/Scheduler.py",
+                "notify-test"
+            ])
+
+            if result.returncode == 0:
+                with open(NOTIFICATION_MARKER, "w") as marker:
+                    marker.write(now.strftime("%Y-%m-%d"))
+
+                print("Pre-stop notification sent.")
+        else:
+            print("Notification already sent.")
+
+
     elif current_time == stop_time:
         print("Stop time reached. Stopping EC2 instances...")
 
@@ -47,6 +76,7 @@ if current_day in weekdays:
             "/home/ubuntu/Cloud_Scheduler/Scheduler.py",
             "stop"
         ])
+
 
     else:
         print("No scheduled action at this time.")
@@ -74,3 +104,8 @@ elif weekend_shutdown:
 
 else:
     print("No weekend shutdown configured.")
+
+
+
+
+

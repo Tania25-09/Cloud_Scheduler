@@ -197,6 +197,39 @@ def stop_instances():
             print(
                 f"{instance_id} is already {state}"
             )
+# --------------------------------------------------
+# Send SNS notification
+# --------------------------------------------------
+
+def send_notification(message):
+
+    """Send an email notification using AWS SNS."""
+
+    try:
+        sns = boto3.client(
+            "sns",
+            region_name=REGION
+        )
+
+        response = sns.publish(
+            TopicArn="arn:aws:sns:ap-south-1:929677619941:EC2AutoSchedulerNotifications",
+            Subject="Cloud Resource Auto-Scheduler Alert",
+            Message=message
+        )
+
+        logger.info(
+            f"SNS notification sent. Message ID: {response['MessageId']}"
+        )
+
+        print("Notification sent successfully.")
+
+    except Exception as e:
+
+        logger.exception(
+            f"Failed to send SNS notification: {e}"
+        )
+
+        print(f"Failed to send notification: {e}")
 
 
 # --------------------------------------------------
@@ -217,6 +250,14 @@ if __name__ == "__main__":
             sys.exit(1)
 
         command = sys.argv[1].lower()
+
+        if command == "notify-test":
+            send_notification(
+                "EC2 Scheduled Shutdown Reminder\n\n"
+                "Your scheduled EC2 instance will be stopped "
+                "in 10 minutes. Please save your work."
+            )
+            sys.exit(0)
 
         if command == "status":
 
