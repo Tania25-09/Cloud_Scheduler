@@ -181,7 +181,7 @@ def stop_instances():
                 )
 
                 logger.info(
-                    f"Stopped EC2 instance: {instance_id}"
+                    f"Stop request submitted for EC2 instance: {instance_id}"
                 )
 
             except Exception as e:
@@ -193,10 +193,10 @@ def stop_instances():
                 )
 
         else:
-
-            print(
-                f"{instance_id} is already {state}"
-            )
+            print(f"Skipping {instance_id}: current state is {state}")
+            logger.info(
+                f"Skipping EC2 instance {instance_id}: current state is {state}"
+            ) 
 # --------------------------------------------------
 # Send SNS notification
 # --------------------------------------------------
