@@ -17,3 +17,7 @@ __pycache__/
 # Backup files
 *.save
 *_backup.py
+
+Schedule.py.before_weekend_update
+Schedule.py.broken_backup
+Scheduler.py.save.1
