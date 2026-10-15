@@ -62,7 +62,7 @@ if current_day in weekdays:
             else:
                 print("Notification command failed; it can be retried.")
         else:
-            print("Notification already attempted successfully today.")
+            print("Notification request already accepted by SNS today.")
 
     elif current_time == stop_time:
         print("Stop time reached. Stopping EC2 instances...")
