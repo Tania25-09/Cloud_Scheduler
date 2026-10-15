@@ -21,3 +21,5 @@ __pycache__/
 Schedule.py.before_weekend_update
 Schedule.py.broken_backup
 Scheduler.py.save.1
+
+.notification_sent_*
