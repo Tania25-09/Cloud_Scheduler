@@ -201,6 +201,7 @@ def stop_instances():
 # Send SNS notification
 # --------------------------------------------------
 
+
 def send_notification(message):
 
     """Send an email notification using AWS SNS."""
@@ -218,18 +219,19 @@ def send_notification(message):
         )
 
         logger.info(
-            f"SNS notification sent. Message ID: {response['MessageId']}"
+            f"SNS notification accepted. Message ID: {response['MessageId']}"
         )
 
-        print("Notification sent successfully.")
+        print("Notification request accepted by SNS.")
+        return True
 
     except Exception as e:
-
         logger.exception(
             f"Failed to send SNS notification: {e}"
         )
 
         print(f"Failed to send notification: {e}")
+        return False
 
 
 # --------------------------------------------------
@@ -252,12 +254,15 @@ if __name__ == "__main__":
         command = sys.argv[1].lower()
 
         if command == "notify-test":
-            send_notification(
+            success = send_notification(
                 "EC2 Scheduled Shutdown Reminder\n\n"
                 "Your scheduled EC2 instance will be stopped "
                 "in 10 minutes. Please save your work."
             )
-            sys.exit(0)
+            sys.exit(0 if success else 1)
+
+
+
 
         if command == "status":
 
